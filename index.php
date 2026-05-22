@@ -36,6 +36,12 @@ header("Content-Security-Policy: $csp");
 
 $router = new Router();
 
+$router->get('/health', function (): void {
+    http_response_code(200);
+    header('Content-Type: application/json');
+    echo json_encode(['status' => 'ok', 'time' => date('c')]);
+});
+
 $router->get('/', [HomeController::class, 'index']);
 $router->get('/catalogo', [ProductController::class, 'catalog']);
 $router->get('/producto/{slug}', [ProductController::class, 'detail']);

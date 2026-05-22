@@ -12,6 +12,7 @@ services:
       APP_ENV: production
       APP_DEBUG: "false"
       APP_URL: "http://localhost"
+      DB_DRIVER: mysql
       DB_HOST: db
       DB_PORT: 3306
       DB_NAME: catalogozapatillas

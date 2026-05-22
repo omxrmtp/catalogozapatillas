@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libavif-dev \
         libfreetype6-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp --with-avif \
-    && docker-php-ext-install -j$(nproc) pdo_mysql gd \
+    && docker-php-ext-install -j$(nproc) pdo_mysql pdo_pgsql gd \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -36,6 +36,8 @@ RUN sed -i 's|upload_max_filesize = 2M|upload_max_filesize = 100M|' "$PHP_INI_DI
 
 ENV APP_ENV=${APP_ENV} \
     APP_DEBUG=${APP_DEBUG}
+
+EXPOSE 80
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["apache2-foreground"]
