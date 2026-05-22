@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libwebp-dev \
         libavif-dev \
         libfreetype6-dev \
+        libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # ── Extensión GD ──
