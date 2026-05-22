@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "image-processing": {
+      "source": "jezweb/claude-skills",
+      "sourceType": "github",
+      "skillPath": "plugins/design-assets/skills/image-processing/SKILL.md",
+      "computedHash": "b6800a4fc2d19d32961067e1d6b0e1306db8e99722b8dd998ea84da8671d34a7"
+    }
+  }
+}

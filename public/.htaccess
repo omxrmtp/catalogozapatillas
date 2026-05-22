@@ -1,0 +1,21 @@
+RewriteEngine On
+
+# Si este .htaccess se usa solo (contenido de public en htdocs), base es /
+RewriteBase /
+
+# ── Front controller ──
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [L,QSA]
+
+Options -Indexes
+
+<FilesMatch "^\.">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order deny,allow
+        Deny from all
+    </IfModule>
+</FilesMatch>

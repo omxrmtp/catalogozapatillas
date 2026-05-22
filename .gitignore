@@ -1,0 +1,26 @@
+# ── Environment ──
+.env
+.env.local
+.env.production
+
+# ── Uploaded images (keep .htaccess) ──
+public/uploads/*
+!public/uploads/.htaccess
+
+# ── OS files ──
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── IDE ──
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Logs ──
+*.log
+
+# ── Temp ──
+/tmp/
