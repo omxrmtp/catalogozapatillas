@@ -1,29 +1,27 @@
-CREATE TABLE IF NOT EXISTS `products` (
-    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    `name` VARCHAR(200) NOT NULL,
-    `slug` VARCHAR(220) NOT NULL UNIQUE,
-    `description` TEXT NULL,
-    `short_description` VARCHAR(300) NULL,
-    `price` DECIMAL(10, 2) NOT NULL,
-    `compare_price` DECIMAL(10, 2) NULL,
-    `sku` VARCHAR(50) NULL UNIQUE,
-    `stock` INT NOT NULL DEFAULT 0,
-    `category_id` INT UNSIGNED NULL,
-    `brand_id` INT UNSIGNED NULL,
-    `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-    `is_featured` TINYINT(1) NOT NULL DEFAULT 0,
-    `views_count` INT UNSIGNED NOT NULL DEFAULT 0,
-    `meta_title` VARCHAR(200) NULL,
-    `meta_description` VARCHAR(300) NULL,
-    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX `idx_products_name` (`name`),
-    INDEX `idx_products_category` (`category_id`),
-    INDEX `idx_products_brand` (`brand_id`),
-    INDEX `idx_products_is_active` (`is_active`),
-    INDEX `idx_products_is_featured` (`is_featured`),
-    INDEX `idx_products_price` (`price`),
-    FULLTEXT INDEX `ft_products_search` (`name`, `description`, `short_description`),
-    CONSTRAINT `fk_products_category` FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT `fk_products_brand` FOREIGN KEY (`brand_id`) REFERENCES `brands`(`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS products (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(200) NOT NULL,
+    slug VARCHAR(220) NOT NULL UNIQUE,
+    description TEXT,
+    short_description VARCHAR(300),
+    price DECIMAL(10, 2) NOT NULL,
+    compare_price DECIMAL(10, 2),
+    sku VARCHAR(50) UNIQUE,
+    stock INTEGER NOT NULL DEFAULT 0,
+    category_id INTEGER REFERENCES categories(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    brand_id INTEGER REFERENCES brands(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    is_active SMALLINT NOT NULL DEFAULT 1,
+    is_featured SMALLINT NOT NULL DEFAULT 0,
+    views_count INTEGER NOT NULL DEFAULT 0,
+    meta_title VARCHAR(200),
+    meta_description VARCHAR(300),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_products_name ON products (name);
+CREATE INDEX IF NOT EXISTS idx_products_category ON products (category_id);
+CREATE INDEX IF NOT EXISTS idx_products_brand ON products (brand_id);
+CREATE INDEX IF NOT EXISTS idx_products_is_active ON products (is_active);
+CREATE INDEX IF NOT EXISTS idx_products_is_featured ON products (is_featured);
+CREATE INDEX IF NOT EXISTS idx_products_price ON products (price);

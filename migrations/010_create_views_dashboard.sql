@@ -28,7 +28,7 @@ SELECT
 
 -- Vista: Productos por categoría (para gráficos)
 CREATE OR REPLACE VIEW v_products_by_category AS
-SELECT c.id, c.name, COUNT(p.id) AS product_count
+SELECT c.id, c.name, COUNT(p.id)::INTEGER AS product_count
 FROM categories c
 LEFT JOIN products p ON p.category_id = c.id AND p.is_active = 1
 WHERE c.is_active = 1

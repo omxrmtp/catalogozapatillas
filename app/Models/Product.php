@@ -111,7 +111,7 @@ final class Product
 
         $sql = "SELECT p.*, b.name as brand_name, b.slug as brand_slug, c.name as category_name, c.slug as category_slug,
                        (SELECT pi.path FROM product_images pi WHERE pi.product_id = p.id AND pi.is_primary = 1 LIMIT 1) as primary_image,
-                       (SELECT GROUP_CONCAT(ps.size ORDER BY ps.size ASC SEPARATOR ', ') FROM product_sizes ps WHERE ps.product_id = p.id) as sizes
+                       (SELECT STRING_AGG(ps.size, ', ' ORDER BY ps.size ASC) FROM product_sizes ps WHERE ps.product_id = p.id) as sizes
                 FROM products p
                 LEFT JOIN brands b ON p.brand_id = b.id
                 LEFT JOIN categories c ON p.category_id = c.id

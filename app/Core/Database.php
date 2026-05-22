@@ -12,23 +12,41 @@ final class Database
 {
     private static ?Database $instance = null;
     private PDO $pdo;
+    private string $driver;
 
     private function __construct()
     {
-        $dsn = sprintf(
-            'mysql:host=%s;port=%s;dbname=%s;charset=%s',
-            DB_HOST,
-            DB_PORT,
-            DB_NAME,
-            DB_CHARSET
-        );
+        $this->driver = DB_DRIVER;
 
-        try {
-            $this->pdo = new PDO($dsn, DB_USER, DB_PASS, [
+        if ($this->driver === 'pgsql') {
+            $dsn = sprintf(
+                'pgsql:host=%s;port=%s;dbname=%s',
+                DB_HOST,
+                DB_PORT,
+                DB_NAME
+            );
+            $options = [
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES   => false,
-            ]);
+            ];
+        } else {
+            $dsn = sprintf(
+                'mysql:host=%s;port=%s;dbname=%s;charset=%s',
+                DB_HOST,
+                DB_PORT,
+                DB_NAME,
+                DB_CHARSET
+            );
+            $options = [
+                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES   => false,
+            ];
+        }
+
+        try {
+            $this->pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
         } catch (PDOException $e) {
             throw new PDOException('Database connection failed: ' . $e->getMessage());
         }
@@ -69,6 +87,14 @@ final class Database
     {
         $columns = implode(', ', array_keys($data));
         $placeholders = ':' . implode(', :', array_keys($data));
+
+        if ($this->driver === 'pgsql') {
+            $sql = "INSERT INTO {$table} ({$columns}) VALUES ({$placeholders}) RETURNING id";
+            $stmt = $this->query($sql, $data);
+            $row = $stmt->fetch();
+            return (int) ($row['id'] ?? 0);
+        }
+
         $sql = "INSERT INTO {$table} ({$columns}) VALUES ({$placeholders})";
         $this->query($sql, $data);
         return (int) $this->pdo->lastInsertId();
@@ -77,6 +103,7 @@ final class Database
     public function update(string $table, array $data, string $where, array $whereParams = []): int
     {
         $sets = implode(', ', array_map(fn($col) => "{$col} = :{$col}", array_keys($data)));
+        $sets .= ', updated_at = CURRENT_TIMESTAMP';
         $sql = "UPDATE {$table} SET {$sets} WHERE {$where}";
         $stmt = $this->query($sql, array_merge($data, $whereParams));
         return $stmt->rowCount();
