@@ -15,17 +15,7 @@ services:
         value: https://catalogozapatillas.onrender.com
       - key: APP_TIMEZONE
         value: America/Mexico_City
-      - key: DB_DRIVER
-        value: pgsql
-      - key: DB_HOST
-        value: ep-snowy-leaf-aq3uys5h.c-8.us-east-1.aws.neon.tech
-      - key: DB_PORT
-        value: "5432"
-      - key: DB_NAME
-        value: neondb
-      - key: DB_USER
-        value: neondb_owner
-      - key: DB_PASS
+      - key: DATABASE_URL
         sync: false
       - key: UPLOAD_MAX_SIZE
         value: "104857600"

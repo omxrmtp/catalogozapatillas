@@ -1,6 +1,20 @@
 #!/bin/bash
 set -e
 
+# ── Parsear DATABASE_URL si existe ──
+if [ -n "$DATABASE_URL" ] && [ -z "$DB_HOST" ]; then
+    echo "=== Parseando DATABASE_URL ==="
+    # postgresql://user:pass@host:port/dbname?params
+    DB_DRIVER="pgsql"
+    DB_USER=$(echo "$DATABASE_URL" | sed -n 's|.*://\([^:]*\):.*|\1|p')
+    DB_PASS=$(echo "$DATABASE_URL" | sed -n 's|.*://[^:]*:\([^@]*\)@.*|\1|p')
+    DB_HOST=$(echo "$DATABASE_URL" | sed -n 's|.*@\([^:/]*\).*|\1|p')
+    DB_PORT=$(echo "$DATABASE_URL" | sed -n 's|.*@[^:]*:\([0-9]*\)/.*|\1|p')
+    DB_NAME=$(echo "$DATABASE_URL" | sed -n 's|.*/\([^?]*\).*|\1|p')
+    [ -z "$DB_PORT" ] && DB_PORT="5432"
+    export DB_DRIVER DB_USER DB_PASS DB_HOST DB_PORT DB_NAME
+fi
+
 # ── Configurar puerto de Apache (Render usa PORT=10000) ──
 if [ -n "$PORT" ] && [ "$PORT" -ne 80 ]; then
     echo "=== Configurando Apache en puerto $PORT ==="
