@@ -9,27 +9,27 @@ final class Router
     private array $routes = [];
     private array $middleware = [];
 
-    public function get(string $path, array $handler, array $middleware = []): void
+    public function get(string $path, callable|array $handler, array $middleware = []): void
     {
         $this->addRoute('GET', $path, $handler, $middleware);
     }
 
-    public function post(string $path, array $handler, array $middleware = []): void
+    public function post(string $path, callable|array $handler, array $middleware = []): void
     {
         $this->addRoute('POST', $path, $handler, $middleware);
     }
 
-    public function put(string $path, array $handler, array $middleware = []): void
+    public function put(string $path, callable|array $handler, array $middleware = []): void
     {
         $this->addRoute('PUT', $path, $handler, $middleware);
     }
 
-    public function delete(string $path, array $handler, array $middleware = []): void
+    public function delete(string $path, callable|array $handler, array $middleware = []): void
     {
         $this->addRoute('DELETE', $path, $handler, $middleware);
     }
 
-    private function addRoute(string $method, string $path, array $handler, array $middleware): void
+    private function addRoute(string $method, string $path, callable|array $handler, array $middleware): void
     {
         $pattern = preg_replace('/\{([a-zA-Z_]+)\}/', '(?P<$1>[a-zA-Z0-9_\-]+)', $path);
         $pattern = '#^' . $pattern . '$#';
@@ -73,9 +73,13 @@ final class Router
                     $mw();
                 }
 
-                [$controllerClass, $methodName] = $route['handler'];
-                $controller = new $controllerClass();
-                $controller->$methodName(...$params);
+                if ($route['handler'] instanceof \Closure) {
+                    ($route['handler'])(...$params);
+                } else {
+                    [$controllerClass, $methodName] = $route['handler'];
+                    $controller = new $controllerClass();
+                    $controller->$methodName(...$params);
+                }
                 return;
             }
         }
