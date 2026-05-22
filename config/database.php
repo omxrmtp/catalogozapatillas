@@ -9,3 +9,4 @@ define('DB_NAME', getenv('DB_NAME') ?: 'catalogozapatillas');
 define('DB_USER', getenv('DB_USER') ?: 'root');
 define('DB_PASS', getenv('DB_PASS') ?: '');
 define('DB_CHARSET', getenv('DB_CHARSET') ?: (DB_DRIVER === 'pgsql' ? 'utf8' : 'utf8mb4'));
+define('DB_SSLMODE', getenv('DB_SSLMODE') ?: '');

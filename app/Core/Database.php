@@ -19,11 +19,13 @@ final class Database
         $this->driver = DB_DRIVER;
 
         if ($this->driver === 'pgsql') {
+            $sslmode = defined('DB_SSLMODE') ? ';sslmode=' . DB_SSLMODE : '';
             $dsn = sprintf(
-                'pgsql:host=%s;port=%s;dbname=%s',
+                'pgsql:host=%s;port=%s;dbname=%s%s',
                 DB_HOST,
                 DB_PORT,
-                DB_NAME
+                DB_NAME,
+                $sslmode
             );
             $options = [
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
