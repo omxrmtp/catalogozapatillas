@@ -1,0 +1,49 @@
+services:
+  app:
+    build:
+      context: .
+      args:
+        APP_ENV: production
+        APP_DEBUG: "false"
+    container_name: catalogozapatillas_app
+    ports:
+      - "80:80"
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_URL: "http://localhost"
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: catalogozapatillas
+      DB_USER: catalog_user
+      DB_PASS: catalog_pass
+    volumes:
+      - uploads_data:/var/www/html/public/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: mysql:8.0
+    container_name: catalogozapatillas_db
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: catalogozapatillas
+      MYSQL_USER: catalog_user
+      MYSQL_PASSWORD: catalog_pass
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+volumes:
+  db_data:
+  uploads_data:
