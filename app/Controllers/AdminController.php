@@ -377,8 +377,21 @@ final class AdminController extends BaseController
             return;
         }
 
+        if (!empty($image['cloudinary_public_id'])) {
+            $cloudinary = new \App\Core\CloudinaryService();
+            if ($cloudinary->isConfigured()) {
+                try {
+                    $cloudinary->delete($image['cloudinary_public_id']);
+                } catch (\Throwable) {
+                }
+            }
+        }
+
         $filesToDelete = array_filter([$image['path'], $image['path_webp'], $image['path_avif']]);
         foreach ($filesToDelete as $file) {
+            if (!str_starts_with((string)$file, '/uploads/')) {
+                continue;
+            }
             $fullPath = PUBLIC_PATH . $file;
             if (file_exists($fullPath) && is_file($fullPath)) {
                 unlink($fullPath);
@@ -670,55 +683,41 @@ final class AdminController extends BaseController
 
         $this->deleteExistingProductImages($productId, $slug);
 
-        $uploadDir = PUBLIC_PATH . '/uploads/' . $slug;
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
+        try {
+            $processor = new ImageProcessor();
+            $images = $processor->process($file, $slug);
+
+            $this->productModel->saveImage(
+                $productId,
+                $images['medium'],
+                'medium',
+                true,
+                $slug,
+                $images['public_id'] ?? null
+            );
+        } catch (\Throwable $e) {
+            Session::setFlash('error', 'Error al procesar la imagen: ' . $e->getMessage());
         }
-
-        if (function_exists('imagecreatefromjpeg')) {
-            try {
-                $processor = new ImageProcessor();
-                $images = $processor->process($file, $slug);
-
-                $this->productModel->saveImage(
-                    $productId,
-                    $images['medium'],
-                    'medium',
-                    true,
-                    $slug
-                );
-            } catch (\Throwable $e) {
-                Session::setFlash('error', 'Error al procesar la imagen: ' . $e->getMessage());
-            }
-            return;
-        }
-
-        $ext = match ($mime) {
-            'image/jpeg' => 'jpg',
-            'image/png'  => 'png',
-            'image/webp' => 'webp',
-            default      => 'jpg',
-        };
-        $filename = $slug . '-primary.' . $ext;
-        move_uploaded_file($file['tmp_name'], $uploadDir . '/' . $filename);
-
-        $this->productModel->saveImage(
-            $productId,
-            ['jpg' => '/uploads/' . $slug . '/' . $filename],
-            'medium',
-            true,
-            $slug
-        );
-
-        Session::setFlash('warning', 'La extensión GD no está habilitada en Apache. La imagen se subió sin conversión a WebP/AVIF. Reinicia Apache desde XAMPP Control Panel para activar la conversión automática.');
     }
 
     private function deleteExistingProductImages(int $productId, string $slug): void
     {
         $existing = $this->productModel->getImages($productId);
+        $cloudinary = new \App\Core\CloudinaryService();
+
         foreach ($existing as $img) {
+            if (!empty($img['cloudinary_public_id']) && $cloudinary->isConfigured()) {
+                try {
+                    $cloudinary->delete($img['cloudinary_public_id']);
+                } catch (\Throwable) {
+                }
+            }
+
             $filesToDelete = array_filter([$img['path'], $img['path_webp'], $img['path_avif']]);
             foreach ($filesToDelete as $file) {
+                if (!str_starts_with((string)$file, '/uploads/')) {
+                    continue;
+                }
                 $fullPath = PUBLIC_PATH . $file;
                 if (file_exists($fullPath) && is_file($fullPath)) {
                     unlink($fullPath);

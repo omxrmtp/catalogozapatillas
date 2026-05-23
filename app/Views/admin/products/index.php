@@ -44,7 +44,7 @@
                 <tr class="hover:bg-gray-50">
                     <td class="px-4 py-3">
                         <?php if (!empty($p['primary_image'])): ?>
-                        <img src="<?= htmlspecialchars($p['primary_image']) ?>" alt="<?= htmlspecialchars($p['name']) ?>" class="w-10 h-10 rounded object-cover">
+                        <img src="<?= htmlspecialchars(cloudinary_url($p['primary_image'], ['width' => 80, 'height' => 80, 'crop' => 'fill', 'quality' => 'auto', 'fetch_format' => 'auto'])) ?>" alt="<?= htmlspecialchars($p['name']) ?>" class="w-10 h-10 rounded object-cover">
                         <?php else: ?>
                         <div class="w-10 h-10 rounded bg-gray-100 flex items-center justify-center text-gray-400">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>

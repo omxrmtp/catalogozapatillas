@@ -6,7 +6,7 @@
     <title><?= htmlspecialchars($metaTitle ?? APP_NAME) ?></title>
     <meta name="description" content="<?= htmlspecialchars($metaDescription ?? '') ?>">
     <?php if (isset($ogImage)): ?>
-    <meta property="og:image" content="<?= htmlspecialchars($ogImage) ?>">
+    <meta property="og:image" content="<?= htmlspecialchars(cloudinary_url($ogImage, ['width' => 1200, 'height' => 630, 'crop' => 'fill', 'quality' => 'auto', 'fetch_format' => 'auto'])) ?>">
     <?php endif; ?>
     <meta property="og:title" content="<?= htmlspecialchars($metaTitle ?? APP_NAME) ?>">
     <meta property="og:description" content="<?= htmlspecialchars($metaDescription ?? '') ?>">

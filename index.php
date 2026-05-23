@@ -20,12 +20,13 @@ header('X-Frame-Options: DENY');
 header('X-Content-Type-Options: nosniff');
 header('Referrer-Policy: strict-origin-when-cross-origin');
 
+$cloudinaryHost = 'https://res.cloudinary.com';
 $csp = "default-src 'self'; "
     . "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; "
     . "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://fonts.googleapis.com; "
-    . "img-src 'self' data:; "
+    . "img-src 'self' data: {$cloudinaryHost}; "
     . "font-src 'self' https://cdn.jsdelivr.net https://fonts.gstatic.com; "
-    . "connect-src 'self' https://cdn.jsdelivr.net";
+    . "connect-src 'self' https://cdn.jsdelivr.net {$cloudinaryHost};";
 
 if (APP_ENV === 'production') {
     header('Strict-Transport-Security: max-age=31536000; includeSubDomains');

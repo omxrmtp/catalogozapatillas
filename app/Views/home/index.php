@@ -42,7 +42,7 @@
         <a href="/producto/<?= htmlspecialchars($product['slug']) ?>" class="group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition">
             <div class="aspect-square bg-gray-100 flex items-center justify-center overflow-hidden">
                 <?php if ($product['primary_image']): ?>
-                <img src="<?= htmlspecialchars($product['primary_image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy">
+                <img src="<?= htmlspecialchars(cloudinary_url($product['primary_image'], ['width' => 400, 'height' => 400, 'crop' => 'fill', 'quality' => 'auto', 'fetch_format' => 'auto'])) ?>" alt="<?= htmlspecialchars($product['name']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy">
                 <?php else: ?>
                 <div class="text-6xl">👟</div>
                 <?php endif; ?>
@@ -74,7 +74,7 @@
         <a href="/producto/<?= htmlspecialchars($product['slug']) ?>" class="group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition">
             <div class="aspect-square bg-gray-100 flex items-center justify-center overflow-hidden">
                 <?php if ($product['primary_image']): ?>
-                <img src="<?= htmlspecialchars($product['primary_image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy">
+                <img src="<?= htmlspecialchars(cloudinary_url($product['primary_image'], ['width' => 400, 'height' => 400, 'crop' => 'fill', 'quality' => 'auto', 'fetch_format' => 'auto'])) ?>" alt="<?= htmlspecialchars($product['name']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy">
                 <?php else: ?>
                 <div class="text-6xl">👟</div>
                 <?php endif; ?>

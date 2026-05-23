@@ -201,16 +201,17 @@ final class Product
         $this->db->delete('product_sizes', 'product_id = ?', [$productId]);
     }
 
-    public function saveImage(int $productId, array $paths, string $type, bool $isPrimary = false, string $altText = null): int
+    public function saveImage(int $productId, array $paths, string $type, bool $isPrimary = false, string $altText = null, ?string $cloudinaryPublicId = null): int
     {
         return $this->db->insert('product_images', [
-            'product_id' => $productId,
-            'path'       => $paths['jpg'] ?? '',
-            'path_webp'  => $paths['webp'] ?? null,
-            'path_avif'  => $paths['avif'] ?? null,
-            'type'       => $type,
-            'is_primary' => $isPrimary ? 1 : 0,
-            'alt_text'   => $altText,
+            'product_id'           => $productId,
+            'path'                 => $paths['jpg'] ?? '',
+            'path_webp'            => $paths['webp'] ?? null,
+            'path_avif'            => $paths['avif'] ?? null,
+            'cloudinary_public_id' => $cloudinaryPublicId,
+            'type'                 => $type,
+            'is_primary'           => $isPrimary ? 1 : 0,
+            'alt_text'             => $altText,
         ]);
     }
 

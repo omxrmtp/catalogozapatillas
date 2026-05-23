@@ -26,12 +26,12 @@
                 <?php if (!empty($images)): ?>
                 <picture id="main-picture">
                     <?php if ($images[0]['path_avif']): ?>
-                    <source srcset="<?= htmlspecialchars($images[0]['path_avif']) ?>" type="image/avif">
+                    <source srcset="<?= htmlspecialchars(cloudinary_url($images[0]['path_avif'], ['width' => 800, 'quality' => 'auto'])) ?>" type="image/avif">
                     <?php endif; ?>
                     <?php if ($images[0]['path_webp']): ?>
-                    <source srcset="<?= htmlspecialchars($images[0]['path_webp']) ?>" type="image/webp">
+                    <source srcset="<?= htmlspecialchars(cloudinary_url($images[0]['path_webp'], ['width' => 800, 'quality' => 'auto'])) ?>" type="image/webp">
                     <?php endif; ?>
-                    <img src="<?= htmlspecialchars($images[0]['path']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" class="w-full h-full object-cover" id="main-image">
+                    <img src="<?= htmlspecialchars(cloudinary_url($images[0]['path'], ['width' => 800, 'quality' => 'auto', 'fetch_format' => 'auto'])) ?>" alt="<?= htmlspecialchars($product['name']) ?>" class="w-full h-full object-cover" id="main-image">
                 </picture>
                 <div id="zoom-lens" class="hidden absolute top-0 left-0 w-32 h-32 bg-white/20 border-2 border-indigo-500 rounded-full pointer-events-none"></div>
                 <div id="zoom-result" class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[90vw] h-[90vh] max-w-4xl max-h-[90vh] bg-white rounded-2xl shadow-2xl overflow-hidden p-2">
@@ -50,8 +50,8 @@
             <?php if (count($images) > 1): ?>
             <div class="grid grid-cols-4 gap-2">
                 <?php foreach ($images as $img): ?>
-                <button class="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-transparent hover:border-indigo-500 transition thumb-btn" data-src="<?= htmlspecialchars($img['path']) ?>">
-                    <img src="<?= htmlspecialchars($img['path']) ?>" alt="" class="w-full h-full object-cover" loading="lazy">
+                <button class="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-transparent hover:border-indigo-500 transition thumb-btn" data-src="<?= htmlspecialchars(cloudinary_url($img['path'], ['width' => 800, 'quality' => 'auto', 'fetch_format' => 'auto'])) ?>">
+                    <img src="<?= htmlspecialchars(cloudinary_url($img['path'], ['width' => 200, 'height' => 200, 'crop' => 'fill', 'quality' => 'auto', 'fetch_format' => 'auto'])) ?>" alt="" class="w-full h-full object-cover" loading="lazy">
                 </button>
                 <?php endforeach; ?>
             </div>
@@ -204,6 +204,6 @@
         "priceCurrency": "MXN",
         "availability": "<?= (int)$product['stock'] > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' ?>"
     },
-    "image": "<?= !empty($images) ? htmlspecialchars($images[0]['path']) : '' ?>"
+    "image": "<?= !empty($images) ? htmlspecialchars(cloudinary_url($images[0]['path'], ['width' => 800, 'quality' => 'auto', 'fetch_format' => 'auto'])) : '' ?>"
 }
 </script>

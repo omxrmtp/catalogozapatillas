@@ -39,7 +39,7 @@
                     <div class="flex gap-3 flex-wrap">
                         <?php foreach ($images as $img): ?>
                         <div class="relative group" data-image-id="<?= $img['id'] ?>">
-                            <img src="<?= htmlspecialchars($img['path']) ?>" alt="<?= htmlspecialchars($img['alt_text'] ?? '') ?>" class="w-28 h-28 object-cover rounded-lg border border-gray-200 shadow-sm">
+                            <img src="<?= htmlspecialchars(cloudinary_url($img['path'], ['width' => 200, 'height' => 200, 'crop' => 'fill', 'quality' => 'auto', 'fetch_format' => 'auto'])) ?>" alt="<?= htmlspecialchars($img['alt_text'] ?? '') ?>" class="w-28 h-28 object-cover rounded-lg border border-gray-200 shadow-sm">
                             <button type="button" class="remove-image absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition flex items-center justify-center shadow" data-image-id="<?= $img['id'] ?>">
                                 ✕
                             </button>

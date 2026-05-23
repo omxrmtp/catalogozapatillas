@@ -32,6 +32,45 @@ if (APP_ENV === 'production') {
     ini_set('display_errors', '1');
 }
 
+/**
+ * Genera una URL de Cloudinary con transformaciones.
+ * - Si la ruta es local (/uploads/), la devuelve sin cambios.
+ * - Si es una URL de Cloudinary completa, extrae el public_id y reconstruye con transformaciones.
+ * - Si es solo un public_id, construye la URL desde cero.
+ */
+function cloudinary_url(?string $path, array $transform = []): string
+{
+    if (empty($path)) {
+        return '';
+    }
+
+    if (str_starts_with($path, '/uploads/')) {
+        return $path;
+    }
+
+    static $service = null;
+    if ($service === null) {
+        $service = new \App\Core\CloudinaryService();
+    }
+    if (!$service->isConfigured()) {
+        return $path;
+    }
+
+    $publicId = $path;
+
+    if (str_contains($path, 'res.cloudinary.com')) {
+        $parts = parse_url($path);
+        $pathParts = explode('/', $parts['path'] ?? '');
+        $uploadIndex = array_search('upload', $pathParts, true);
+        if ($uploadIndex !== false && isset($pathParts[$uploadIndex + 2])) {
+            $publicId = implode('/', array_slice($pathParts, $uploadIndex + 2));
+            $publicId = preg_replace('/\.[^.]+$/', '', $publicId);
+        }
+    }
+
+    return $service->buildUrl($publicId, $transform);
+}
+
 spl_autoload_register(static function (string $class): void {
     $prefix = 'App\\';
     $baseDir = ROOT_PATH . '/app/';

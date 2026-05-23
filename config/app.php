@@ -15,6 +15,10 @@ define('THUMBNAIL_WIDTH', 400);
 define('MEDIUM_WIDTH', 800);
 define('LARGE_WIDTH', 1200);
 
+define('CLOUDINARY_CLOUD_NAME', getenv('CLOUDINARY_CLOUD_NAME') ?: '');
+define('CLOUDINARY_API_KEY', getenv('CLOUDINARY_API_KEY') ?: '');
+define('CLOUDINARY_API_SECRET', getenv('CLOUDINARY_API_SECRET') ?: '');
+
 define('CACHE_EXPIRY', 3600);
 define('RATE_LIMIT_MAX_ATTEMPTS', 5);
 define('RATE_LIMIT_WINDOW', 900);
