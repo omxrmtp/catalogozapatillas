@@ -8,6 +8,7 @@ use App\Controllers\AdminController;
 use App\Controllers\AuthController;
 use App\Controllers\HomeController;
 use App\Controllers\ProductController;
+use App\Core\Database;
 use App\Core\Request;
 use App\Core\Router;
 use App\Core\Session;
@@ -38,9 +39,24 @@ header("Content-Security-Policy: $csp");
 $router = new Router();
 
 $router->get('/health', function (): void {
-    http_response_code(200);
     header('Content-Type: application/json');
-    echo json_encode(['status' => 'ok', 'time' => date('c')]);
+
+    $dbOk = false;
+    try {
+        $db = Database::getInstance()->getConnection();
+        $dbOk = (bool) $db->query('SELECT 1')->fetchColumn();
+    } catch (\Throwable $e) {
+        $dbOk = false;
+    }
+
+    if (!$dbOk) {
+        http_response_code(503);
+        echo json_encode(['status' => 'error', 'db' => 'unreachable', 'time' => date('c')]);
+        return;
+    }
+
+    http_response_code(200);
+    echo json_encode(['status' => 'ok', 'db' => 'ok', 'time' => date('c')]);
 });
 
 $router->get('/', [HomeController::class, 'index']);
